@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        #outer
+        {
+            width:75%;
+            margin:0 auto;
+        }
+        nav a
+        {
+            text-decoration:none;
+            color:blue;
+            margin-left:2%;
+        }
+        h1
+        {
+            text-align:center;
+        }
+        p
+        {
+            margin-top:400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="outer">
+    {{>header}}
+    <br>
+    <form>
+        <label>Enter the location:</label>
+        <input type = "text">
+        <button>search</button>
+    </form>
+    <br>
+    <div id="content"></div>
+    {{>footer}}    <!--for partials-->
+    </div>
+    <script>
+        const s = document.querySelector("input");
+        const f = document.querySelector("form");
+        const c = document.getElementById("content");
+        f.addEventListener("submit",(event)=>
+        {
+           event.preventDefault();
+           if(s.value)
+           {
+               api().then(res => {
+                let s = "The location name is "+res.location.name+" The current date and time is "+res.location.localtime+" and the current temperature in degree celcius is "+res.current.temp_c+" and the condition is "+res.current.condition.text;
+               c.innerText=s;}).catch(err => c.innerText = err.message);
+           }
+        })
+        async function api()
+        {
+            let res = await fetch(`http://api.weatherapi.com/v1/current.json?key=76ee2ea77dd1423988090325242603&q=${s.value}`);
+            let r = await res.json();
+            console.log(r);
+            return r;
+        }
+    </script>
+</body>
+</html>
